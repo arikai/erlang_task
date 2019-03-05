@@ -16,11 +16,12 @@
 %% UserName = string()
 %% City     = string()
 
--type(key()        :: { integer() } ).
--type(username()   :: { string()  } ).
--type(city()       :: { string()  } ).
--type(db_name()    :: { string()  } ).
+-type(key()        :: integer() ).
+-type(username()   :: string()  ).
+-type(city()       :: string()  ).
+-type(db_name()    :: string()  ).
 -type(err_msg()    :: atom() | term() ).
+-type(status()     :: ok | error ).
 
 -type(db_record()  :: { key(), username(), city() }).
 
@@ -35,7 +36,6 @@ new(DbName) when is_list(DbName) ->
                 ]),
     ok.
 
-%% -spec
 -spec( create(Record :: db_record(), DbName :: db_name() ) -> { ok, db_record() } | { error, err_msg() } ).
 create(Record, DbName) when is_tuple(Record), is_list(DbName) ->
     DB = list_to_atom(DbName),
@@ -68,8 +68,7 @@ update(Record, DbName) ->
         case ets:member(DB, element(1, Record)) of
             true ->
                 case ets:insert(DB, Record) of
-                    true -> {ok, Record};
-                    false -> {error, key_not_found}
+                    true -> {ok, Record}
                 end;
             false -> {error, key_not_found}
         end
